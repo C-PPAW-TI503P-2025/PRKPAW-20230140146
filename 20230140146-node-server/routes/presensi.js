@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const presensiController = require('../controllers/presensiController')
+const presensiController = require('../Controllers/presensiController')
 const { addUserData } = require('../middleware/permissionMiddleware');
 
 router.use(addUserData);
