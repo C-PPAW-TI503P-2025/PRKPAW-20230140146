@@ -3,8 +3,10 @@ const cors = require('cors');
 const app = express();
 const PORT = 3001;
 
-// Impor rute buku
+// Import routes
 const bookRoutes = require('./routes/books');
+const reportRoutes = require('./routes/reports');
+const presensiRoutes = require('./routes/presensi');
 
 // Middleware
 app.use(cors()); 
@@ -19,8 +21,10 @@ app.get('/', (req, res) => {
   res.send('Home Page for API');
 });
 
-// Menggunakan rute buku SEBELUM app.listen
+// Register routes
 app.use('/api/books', bookRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/presensi', presensiRoutes);
 
 // Error Handling untuk 404
 app.use((req, res, next) => {

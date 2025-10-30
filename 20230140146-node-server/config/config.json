@@ -1,11 +1,11 @@
 {
   "development": {
     "username": "root",
-    "password": "@Aiszr131004", 
+    "password": "Aiszr131004",
     "database": "praktikum_20230140146_db",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "port": "3309" 
+    "port": 3309
   },
   "test": {
     "username": "root",
