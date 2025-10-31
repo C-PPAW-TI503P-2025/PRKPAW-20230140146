@@ -11,14 +11,17 @@
 ### 1. Endpoint update data presensi (PUT)
 ![PUT](<Tugas/Tugas5/Screenshots/update_data_presensi.png>)
 
-### 2. Endpoint update jika format tanggal yang diisi tidak valid (PUT)
+### 2. Endpoint update jika format tanggal yang diisi valid (PUT)
+![PUT](<Tugas/Tugas5/Screenshots/format_tanggal _valid.png>)
+
+### 3. Endpoint update jika format tanggal yang diisi tidak valid (PUT)
 ![PUT](<Tugas/Tugas5/Screenshots/format_tanggal_tidak _valid.png>)
 
-### 3. Endpoint delete data
+### 4. Endpoint delete data
 ![DELETE](<Tugas/Tugas5/Screenshots/delete_data.png>)
 
-### 4.Enpoint search berdasarkan nama
+### 5.Enpoint search berdasarkan nama
 ![GET](<Tugas/Tugas5/Screenshots/search_berdasarkan_nama.png>)
 
-### 5. Endpoint search berdasarkan tanggal
+### 6. Endpoint search berdasarkan tanggal
 ![GET](<Tugas/Tugas5/Screenshots/search_berdasarkan_tanggal.png>)
