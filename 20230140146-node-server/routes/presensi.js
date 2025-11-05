@@ -22,12 +22,12 @@ const validatePresensiUpdate = [
   },
 ];
 
-router.post("/checkin", permission.addUserData, permission.isAdmin, presensiController.CheckIn);
-router.post("/checkout", permission.addUserData, permission.isAdmin, presensiController.CheckOut);
-router.put("/:id", permission.addUserData, permission.isAdmin, validatePresensiUpdate, presensiController.updatePresensi);
-router.delete("/:id", permission.addUserData, permission.isAdmin, presensiController.deletePresensi);
-router.get("/search", permission.addUserData, permission.isAdmin, presensiController.searchByNama);
-router.get("/search-by-date", permission.addUserData, permission.isAdmin, presensiController.searchByTanggal);
+router.post("/checkin", permission.authenticateToken, presensiController.CheckIn);
+router.post("/checkout", permission.authenticateToken, presensiController.CheckOut);
+router.put("/:id", permission.authenticateToken, validatePresensiUpdate, presensiController.updatePresensi);
+router.delete("/:id", permission.authenticateToken, presensiController.deletePresensi);
+router.get("/search", permission.authenticateToken, permission.isAdmin, presensiController.searchByNama);
+router.get("/search-by-date", permission.authenticateToken, permission.isAdmin, presensiController.searchByTanggal);
 
 
 module.exports = router;

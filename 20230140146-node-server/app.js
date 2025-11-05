@@ -7,6 +7,7 @@ const PORT = 3001;
 const bookRoutes = require('./routes/books');
 const reportRoutes = require('./routes/reports');
 const presensiRoutes = require('./routes/presensi');
+const presensiRoutes = require('./routes/auth');
 
 // Middleware
 app.use(cors()); 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 app.use('/api/books', bookRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/presensi', presensiRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error Handling untuk 404
 app.use((req, res, next) => {

@@ -1,5 +1,5 @@
-// 1. Ganti sumber data dari array ke model Sequelize
- 	const { Presensi } = require("../models");
+ 	// 1. Ganti sumber data dari array ke model Sequelize
+ 	const { Presensi, User } = require("../models");
 	const { Op } = require("sequelize");
 	const { format } = require("date-fns-tz");
 	const timeZone = "Asia/Jakarta";
@@ -156,7 +156,8 @@
 			const hasil = await Presensi.findAll({
 			where: {
 				nama: { [Op.like]: `%${nama}%` }
-			}
+			},
+			include: [{ model: User, as: 'user', attributes: ['id','nama'] }]
 			});
 			res.json({
 			message: `Hasil pencarian untuk nama '${nama}'`,
@@ -183,6 +184,7 @@
 				where: {
 					checkIn: { [Op.between]: [startDate, endDate] },
 				},
+				include: [{ model: User, as: 'user', attributes: ['id','nama'] }]
 			});
 
 			if (hasil.length === 0) {
