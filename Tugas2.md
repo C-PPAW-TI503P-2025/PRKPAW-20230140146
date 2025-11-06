@@ -1,15 +1,10 @@
-<<<<<<< HEAD
 # Tugas 2 - Membuat Server HTTP dengan Node.js dan Express.js
 
-=======
-# Tugas 3 - Membuat Server HTTP dengan Node.js dan Express.js
->>>>>>> 2014214b6c69132deb2a972c61a61bb9d629749e
 
 **Nama:** Aiskha Zahwa Rayya
 **NIM:** 20230140146
 **Kelas:** C
 **Kelas:** Praktikum PAW  
-
 
 ---
 

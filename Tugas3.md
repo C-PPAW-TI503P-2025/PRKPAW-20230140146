@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-# Tugas 3 -Pengelolaan Routing dan Middleware di Express.js 
-=======
 # Tugas 3 - Pengelolaan Routing dan Middleware di Express.js
->>>>>>> 2014214b6c69132deb2a972c61a61bb9d629749e
+
 **Nama:** Aiskha Zahwa Rayya
 **NIM:** 20230140146
 **Kelas:** C
@@ -28,6 +25,5 @@
 ### 6. reports daily karyawan (GET)
 <<<<<<< HEAD
 ![GET](<Tugas/Tugas3/Screenshots/reports_daily_karyawan.png>)
-=======
-![GET](<Tugas/Tugas 3/Screenshots/reports_daily_karyawan.png>)
->>>>>>> 2014214b6c69132deb2a972c61a61bb9d629749e
+
+
