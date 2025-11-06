@@ -5,14 +5,30 @@ const JWT_SECRET = 'INI_ADALAH_KUNCI_RAHASIA_ANDA_YANG_SANGAT_AMAN';
 
 exports.register = async (req, res) => {
   try {
+    console.log('DEBUG register body:', req.body);
     const { nama, email, password, role } = req.body;
 
     if (!nama || !email || !password) {
-      return res.status(400).json({ message: "Nama, email, dan password harus diisi" });
+      return res.status(400).json({ 
+        status: 'error',
+        message: "Data tidak lengkap! Nama, email, dan password wajib diisi" 
+      });
     }
 
     if (role && !['mahasiswa', 'admin'].includes(role)) {
-      return res.status(400).json({ message: "Role tidak valid. Harus 'mahasiswa' atau 'admin'." });
+      return res.status(400).json({ 
+        status: 'error',
+        message: "Role tidak valid! Pilihan role hanya 'mahasiswa' atau 'admin'" 
+      });
+    }
+
+    // Cek apakah email sudah terdaftar
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({
+        status: 'error', 
+        message: "Email sudah terdaftar! Silakan gunakan email lain"
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10); 
@@ -24,15 +40,28 @@ exports.register = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Registrasi berhasil",
-      data: { id: newUser.id, email: newUser.email, role: newUser.role }
+      status: 'success',
+      message: "Registrasi berhasil! Akun telah dibuat",
+      data: { 
+        id: newUser.id, 
+        nama: newUser.nama,
+        email: newUser.email, 
+        role: newUser.role 
+      }
     });
 
   } catch (error) {
+    console.error('Error saat registrasi:', error);
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ message: "Email sudah terdaftar." });
+      return res.status(400).json({ 
+        status: 'error',
+        message: "Email sudah terdaftar! Silakan gunakan email lain" 
+      });
     }
-    res.status(500).json({ message: "Terjadi kesalahan pada server", error: error.message });
+    res.status(500).json({ 
+      status: 'error',
+      message: "Maaf, terjadi kesalahan pada server. Silakan coba lagi nanti" 
+    });
   }
 };
 

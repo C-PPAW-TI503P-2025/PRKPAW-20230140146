@@ -4,7 +4,7 @@
 	const { format } = require("date-fns-tz");
 	const timeZone = "Asia/Jakarta";
  	
- 	exports.CheckIn = async (req, res) => {
+ 	exports.checkIn = async (req, res) => {
  	  // 2. Gunakan try...catch untuk error handling
  	  try {
  	    const { id: userId, nama: userName } = req.user;
@@ -28,14 +28,14 @@
  	      checkIn: waktuSekarang,
  	    });
  	    
- 	    const formattedData = {
- 	        userId: newRecord.userId,
- 	        nama: newRecord.nama,
- 	        checkIn: format(newRecord.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
- 	        checkOut: null
- 	    };
- 	
- 	    res.status(201).json({
+    const formattedData = {
+        userId: newRecord.userId,
+        nama: newRecord.nama,
+        checkIn: format(newRecord.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+        checkOut: null,
+        createdAt: format(newRecord.createdAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+        updatedAt: format(newRecord.updatedAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone })
+    }; 	    res.status(201).json({
  	      message: `Halo ${userName}, check-in Anda berhasil pada pukul ${format(
  	        waktuSekarang,
  	        "HH:mm:ss",
@@ -48,7 +48,7 @@
  	  }
  	};
  	
- 	exports.CheckOut = async (req, res) => {
+ 	exports.checkOut = async (req, res) => {
  	  // Gunakan try...catch
  	  try {
  	    const { id: userId, nama: userName } = req.user;
@@ -69,14 +69,14 @@
  	    recordToUpdate.checkOut = waktuSekarang;
  	    await recordToUpdate.save();
  	
- 	    const formattedData = {
- 	        userId: recordToUpdate.userId,
- 	        nama: recordToUpdate.nama,
- 	        checkIn: format(recordToUpdate.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
- 	        checkOut: format(recordToUpdate.checkOut, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
- 	    };
- 	
- 	    res.json({
+    const formattedData = {
+        userId: recordToUpdate.userId,
+        nama: recordToUpdate.nama,
+        checkIn: format(recordToUpdate.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+        checkOut: format(recordToUpdate.checkOut, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+        createdAt: format(recordToUpdate.createdAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+        updatedAt: format(recordToUpdate.updatedAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone })
+    }; 	    res.json({
  	      message: `Selamat jalan ${userName}, check-out Anda berhasil pada pukul ${format(
  	        waktuSekarang,
  	        "HH:mm:ss",

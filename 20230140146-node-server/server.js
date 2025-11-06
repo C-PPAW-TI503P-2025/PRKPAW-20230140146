@@ -8,6 +8,7 @@ const PORT = 3001;
 const presensiRoutes = require("./routes/presensi");
 const reportRoutes = require("./routes/reports");
 const ruteBuku = require("./routes/books");
+const authRoutes = require("./routes/auth");
 
 // Middleware
 app.use(cors());
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/books", ruteBuku);
 app.use("/api/presensi", presensiRoutes);
 app.use("/api/reports", reportRoutes);
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

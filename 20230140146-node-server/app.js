@@ -7,7 +7,7 @@ const PORT = 3001;
 const bookRoutes = require('./routes/books');
 const reportRoutes = require('./routes/reports');
 const presensiRoutes = require('./routes/presensi');
-const presensiRoutes = require('./routes/auth');
+const authRoutes = require('./routes/auth');
 
 // Middleware
 app.use(cors()); 

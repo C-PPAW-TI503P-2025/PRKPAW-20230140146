@@ -22,8 +22,8 @@ const validatePresensiUpdate = [
   },
 ];
 
-router.post("/checkin", permission.authenticateToken, presensiController.CheckIn);
-router.post("/checkout", permission.authenticateToken, presensiController.CheckOut);
+router.post("/check-in", permission.authenticateToken, presensiController.checkIn);
+router.post("/check-out", permission.authenticateToken, presensiController.checkOut);
 router.put("/:id", permission.authenticateToken, validatePresensiUpdate, presensiController.updatePresensi);
 router.delete("/:id", permission.authenticateToken, presensiController.deletePresensi);
 router.get("/search", permission.authenticateToken, permission.isAdmin, presensiController.searchByNama);
