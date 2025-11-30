@@ -29,8 +29,3 @@ exports.isAdmin = (req, res, next) => {
     return res.status(403).json({ message: 'Akses ditolak: hanya untuk admin.' });
   }
 };
-
-exports.addUserData = (req, res, next) => {
-  req.user = { id: 123, nama: 'User Dummy', role: 'admin' };
-  next();
-};

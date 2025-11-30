@@ -1,45 +1,65 @@
-const { Presensi } = require("../models");
-const { Op } = require("sequelize");
+const { Presensi, User } = require("../models");
+const { Op } = require("sequelize"); 
 
 exports.getDailyReport = async (req, res) => {
   try {
-    const { nama, tanggalMulai, tanggalSelesai } = req.query;
-    let where = {};
+    const { email, tanggalMulai, tanggalSelesai } = req.query;
 
-  const qnama = nama || req.query.name;
-  if (qnama) {
-    where.nama = { [Op.like]: `%${qnama}%` };
-    }
-
+    // Where clause untuk Presensi (filter tanggal)
+    let wherePresensi = {}; 
     if (tanggalMulai) {
-      const start = new Date(tanggalMulai);
-      if (isNaN(start.getTime())) {
-        return res.status(400).json({ message: "Format tanggalMulai tidak valid. Gunakan YYYY-MM-DD atau ISO 8601." });
+      const startString = `${tanggalMulai} 00:00:00`;
+      const dateStart = new Date(startString); 
+      if (isNaN(dateStart.getTime())) {
+        return res.status(400).json({ message: "Format tanggalMulai tidak valid. Gunakan YYYY-MM-DD." });
       }
 
-      let end;
+      let dateEnd;
       if (tanggalSelesai) {
-        end = new Date(tanggalSelesai);
-        if (isNaN(end.getTime())) {
-          return res.status(400).json({ message: "Format tanggalSelesai tidak valid. Gunakan YYYY-MM-DD atau ISO 8601." });
+        const endString = `${tanggalSelesai} 23:59:59.999`;
+        dateEnd = new Date(endString);
+        if (isNaN(dateEnd.getTime())) {
+          return res.status(400).json({ message: "Format tanggalSelesai tidak valid. Gunakan YYYY-MM-DD." });
         }
       } else {
-        end = new Date(start);
+        const endString = `${tanggalMulai} 23:59:59.999`;
+        dateEnd = new Date(endString);
       }
-
-      start.setHours(0, 0, 0, 0);
-      end.setHours(23, 59, 59, 999);
-      where.checkIn = { [Op.between]: [start, end] };
+      
+      wherePresensi.checkIn = { [Op.between]: [dateStart, dateEnd] };
     }
 
-    const records = await Presensi.findAll({ where });
+    // Filter email
+    let whereUser = {};
+    if (email) {
+      whereUser.email = { [Op.like]: `%${email}%` };
+    }
 
+    // Ambil data presensi + user
+    const records = await Presensi.findAll({ 
+      where: wherePresensi,
+      include: [{ 
+        model: User,
+        as: 'user',
+        where: whereUser,
+        attributes: ['email'] 
+      }]
+    });
+
+    // Format response supaya ada email + tanggalMulai + tanggalSelesai
+    const formattedData = records.map(r => ({
+      email: r.user.email,
+      tanggalMulai: tanggalMulai || null,
+      tanggalSelesai: tanggalSelesai || null,
+      presensi: r // optional: semua data presensi lain
+    }));
 
     res.json({
       reportDate: new Date().toLocaleDateString(),
-    data: records,
+      data: formattedData,
     });
   } catch (error) {
-    res.status(500).json({ message: "Gagal mengambil laporan" });
+    console.error(error);
+    res.status(500).json({ message: "Gagal mengambil laporan", error: error.message });
   }
 };

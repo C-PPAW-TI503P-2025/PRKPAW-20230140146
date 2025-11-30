@@ -1,12 +1,15 @@
+// src/components/LoginPage.js
+
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,7 +26,7 @@ function LoginPage() {
       const decoded = jwtDecode(token);
 
       localStorage.setItem('token', token);
-      localStorage.setItem('nama', decoded.nama);
+      localStorage.setItem('email', decoded.email); // diganti dari nama ke email
       localStorage.setItem('role', decoded.role);
       localStorage.setItem('userId', decoded.id);
 
@@ -34,12 +37,12 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 
+    <div className="min-h-screen flex items-center justify-center px-4 
                     bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200">
 
       <div className="bg-white w-full max-w-md p-10 rounded-3xl shadow-xl border border-gray-100">
 
-        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-2">
+        <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text mb-2">
           Login
         </h2>
         <p className="text-center text-sm text-gray-600 mb-8">
@@ -94,12 +97,9 @@ function LoginPage() {
 
         <p className="text-center text-sm mt-6 text-gray-700">
           Belum punya akun?{" "}
-          <span
-            onClick={() => navigate('/register')}
-            className="text-indigo-600 font-semibold cursor-pointer hover:underline"
-          >
+          <Link className="text-indigo-600 font-semibold hover:underline" to="/register">
             Register
-          </span>
+          </Link>
         </p>
       </div>
     </div>
