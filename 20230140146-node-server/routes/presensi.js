@@ -1,5 +1,3 @@
-// File: routes/presensi.js
-
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
@@ -28,9 +26,11 @@ const validatePresensiUpdate = [
 ];
 
 // Routes
+// ✅ Tambahkan upload.single('buktiFoto') untuk menerima foto
 router.post(
   "/check-in",
   permission.authenticateToken,
+  presensiController.upload.single('buktiFoto'),
   presensiController.checkIn
 );
 

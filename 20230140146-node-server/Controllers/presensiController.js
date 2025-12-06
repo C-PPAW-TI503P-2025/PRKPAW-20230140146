@@ -3,6 +3,34 @@ const { Op } = require("sequelize");
 const { format } = require("date-fns-tz");
 const timeZone = "Asia/Jakarta";
 
+// ===========================
+// 🔹 Konfigurasi Upload Foto
+// ===========================
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Hanya file gambar yang diperbolehkan!"), false);
+  }
+};
+
+exports.upload = multer({ storage: storage, fileFilter: fileFilter });
+
+// ===========================
+// 🔹 CHECK-IN
+// ===========================
 exports.checkIn = async (req, res) => {
   try {
     const { id: userId } = req.user;
@@ -14,7 +42,9 @@ exports.checkIn = async (req, res) => {
     });
 
     if (existingRecord) {
-      return res.status(400).json({ message: "Anda sudah melakukan check-in hari ini." });
+      return res
+        .status(400)
+        .json({ message: "Anda sudah melakukan check-in hari ini." });
     }
 
     const newRecord = await Presensi.create({
@@ -22,6 +52,7 @@ exports.checkIn = async (req, res) => {
       checkIn: waktuSekarang,
       latitude: latitude,
       longitude: longitude,
+      buktiFoto: req.file ? req.file.path : null, // ⬅️ FOTO TERSIMPAN DI DATABASE
     });
 
     const formattedData = {
@@ -30,8 +61,9 @@ exports.checkIn = async (req, res) => {
       checkOut: null,
       latitude: newRecord.latitude,
       longitude: newRecord.longitude,
+      buktiFoto: newRecord.buktiFoto, // ⬅️ FOTO DI-RETURN JUGA
       createdAt: format(newRecord.createdAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
-      updatedAt: format(newRecord.updatedAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone })
+      updatedAt: format(newRecord.updatedAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
     };
 
     res.status(201).json({
@@ -50,6 +82,9 @@ exports.checkIn = async (req, res) => {
   }
 };
 
+// ===========================
+// 🔹 CHECK-OUT
+// ===========================
 exports.checkOut = async (req, res) => {
   try {
     const { id: userId } = req.user;
@@ -72,8 +107,11 @@ exports.checkOut = async (req, res) => {
       userId: recordToUpdate.userId,
       checkIn: format(recordToUpdate.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
       checkOut: format(recordToUpdate.checkOut, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+      latitude: recordToUpdate.latitude,
+      longitude: recordToUpdate.longitude,
+      buktiFoto: recordToUpdate.buktiFoto,
       createdAt: format(recordToUpdate.createdAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
-      updatedAt: format(recordToUpdate.updatedAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone })
+      updatedAt: format(recordToUpdate.updatedAt, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
     };
 
     res.json({
@@ -92,6 +130,9 @@ exports.checkOut = async (req, res) => {
   }
 };
 
+// ===========================
+// 🔹 DELETE PRESENSI
+// ===========================
 exports.deletePresensi = async (req, res) => {
   try {
     const { id: userId } = req.user;
@@ -116,6 +157,9 @@ exports.deletePresensi = async (req, res) => {
   }
 };
 
+// ===========================
+// 🔹 UPDATE PRESENSI
+// ===========================
 exports.updatePresensi = async (req, res) => {
   try {
     const presensiId = req.params.id;
@@ -150,6 +194,9 @@ exports.updatePresensi = async (req, res) => {
   }
 };
 
+// ===========================
+// 🔹 SEARCH PRESENSI BY TANGGAL
+// ===========================
 exports.searchByTanggal = async (req, res) => {
   try {
     const { tanggal } = req.query;
@@ -186,6 +233,9 @@ exports.searchByTanggal = async (req, res) => {
   }
 };
 
+// ===========================
+// 🔹 SEARCH PRESENSI BY EMAIL
+// ===========================
 exports.searchByEmail = async (req, res) => {
   try {
     const { email } = req.query;
@@ -202,11 +252,11 @@ exports.searchByEmail = async (req, res) => {
           model: User,
           as: "user",
           where: {
-            email: { [Op.like]: `%${email}%` }
+            email: { [Op.like]: `%${email}%` },
           },
-          attributes: ["id", "email", "role"]
-        }
-      ]
+          attributes: ["id", "email", "role"],
+        },
+      ],
     });
 
     if (hasil.length === 0) {
@@ -225,11 +275,14 @@ exports.searchByEmail = async (req, res) => {
   }
 };
 
+// ===========================
+// 🔹 DAILY REPORT
+// ===========================
 exports.getDailyReport = async (req, res) => {
   try {
     const { email, tanggalMulai, tanggalSelesai } = req.query;
-    let wherePresensi = {}; 
-    let whereUser = {};     
+    let wherePresensi = {};
+    let whereUser = {};
 
     if (email) {
       whereUser.email = { [Op.like]: `%${email}%` };
@@ -237,36 +290,42 @@ exports.getDailyReport = async (req, res) => {
 
     if (tanggalMulai) {
       const startString = `${tanggalMulai} 00:00:00`;
-      const dateStart = new Date(startString); 
-      
+      const dateStart = new Date(startString);
+
       if (isNaN(dateStart.getTime())) {
-        return res.status(400).json({ message: "Format tanggalMulai tidak valid. Gunakan YYYY-MM-DD." });
+        return res
+          .status(400)
+          .json({ message: "Format tanggalMulai tidak valid. Gunakan YYYY-MM-DD." });
       }
 
       let dateEnd;
       if (tanggalSelesai) {
         const endString = `${tanggalSelesai} 23:59:59.999`;
         dateEnd = new Date(endString);
-        
+
         if (isNaN(dateEnd.getTime())) {
-          return res.status(400).json({ message: "Format tanggalSelesai tidak valid. Gunakan YYYY-MM-DD." });
+          return res
+            .status(400)
+            .json({ message: "Format tanggalSelesai tidak valid. Gunakan YYYY-MM-DD." });
         }
       } else {
         const endString = `${tanggalMulai} 23:59:59.999`;
         dateEnd = new Date(endString);
       }
-      
+
       wherePresensi.checkIn = { [Op.between]: [dateStart, dateEnd] };
     }
 
-    const records = await Presensi.findAll({ 
+    const records = await Presensi.findAll({
       where: wherePresensi,
-      include: [{ 
-        model: User,
-        as: 'user',
-        where: whereUser,
-        attributes: ['email', 'role']
-      }]
+      include: [
+        {
+          model: User,
+          as: "user",
+          where: whereUser,
+          attributes: ["email", "role"],
+        },
+      ],
     });
 
     res.json({

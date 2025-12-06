@@ -3,11 +3,13 @@ const cors = require('cors');
 const app = express();
 const PORT = 3001;
 
+
 // Import routes
 const bookRoutes = require('./routes/books');
 const reportRoutes = require('./routes/reports');
 const presensiRoutes = require('./routes/presensi');
 const authRoutes = require('./routes/auth');
+const path = require('path'); 
 
 // Middleware
 app.use(cors()); 
@@ -27,6 +29,7 @@ app.use('/api/books', bookRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/presensi', presensiRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Error Handling untuk 404
 app.use((req, res, next) => {
