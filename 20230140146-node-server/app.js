@@ -10,6 +10,7 @@ const reportRoutes = require('./routes/reports');
 const presensiRoutes = require('./routes/presensi');
 const authRoutes = require('./routes/auth');
 const path = require('path'); 
+const iotRoutes = require("./routes/iot");
 
 // Middleware
 app.use(cors()); 
@@ -30,6 +31,8 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/presensi', presensiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/api/iot", iotRoutes);
+
 
 // Error Handling untuk 404
 app.use((req, res, next) => {
@@ -40,4 +43,6 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
+
+
 

@@ -1,5 +1,3 @@
-// File: src/components/Navbar.js
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -89,6 +87,21 @@ function Navbar() {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     Presensi
+                                </Link>
+
+                                {/* BARU: Monitoring IoT Link */}
+                                <Link 
+                                    to="/monitoring" 
+                                    className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+                                        isActive('/monitoring')
+                                            ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md'
+                                            : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
+                                    }`}
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                    Monitoring IoT
                                 </Link>
 
                                 {/* Admin Only - Laporan Link */}
@@ -191,6 +204,18 @@ function Navbar() {
                             📍 Presensi
                         </Link>
 
+                        {/* BARU: Mobile Monitoring IoT Link */}
+                        <Link 
+                            to="/monitoring" 
+                            className={`block px-4 py-2 rounded-lg font-medium transition-all ${
+                                isActive('/monitoring')
+                                    ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white'
+                                    : 'text-gray-700 hover:bg-orange-50'
+                            }`}
+                        >
+                            📊 Monitoring IoT
+                        </Link>
+
                         {user.role?.toLowerCase() === "admin" && (
                             <Link 
                                 to="/reports" 
@@ -200,7 +225,7 @@ function Navbar() {
                                         : 'text-gray-700 hover:bg-emerald-50'
                                 }`}
                             >
-                                📊 Laporan
+                                📋 Laporan
                             </Link>
                         )}
 

@@ -8,6 +8,7 @@ import RegisterPage from './components/RegisterPage';
 import DashboardPage from './components/DashboardPage';
 import PresensiPage from './components/PresensiPage';
 import ReportPage from './components/ReportPage';
+import SensorPage from './components/SensorPage'; // BARU: Import SensorPage
 
 // =============== PROTECTED ROUTE ===============
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -35,11 +36,11 @@ function AppWrapper() {
       {!hideNavbar && <Navbar />}
 
       <Routes>
-        {/* Public */}
+        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* User Routes */}
+        {/* Protected User Routes */}
         <Route
           path="/dashboard"
           element={
@@ -58,7 +59,17 @@ function AppWrapper() {
           }
         />
 
-        {/* Admin Only */}
+        {/* BARU: Route Monitoring IoT (Bisa diakses semua user yang login) */}
+        <Route
+          path="/monitoring"
+          element={
+            <ProtectedRoute>
+              <SensorPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Only Routes */}
         <Route
           path="/reports"
           element={
