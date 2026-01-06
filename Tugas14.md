@@ -10,3 +10,6 @@
 
 ### 1.Halaman Dashboard
 ![](<Tugas/Tugas14/Screenshots/dashboard.png>)
+
+### 2. Tabel database sensorlog
+![](<Tugas/Tugas14/Screenshots/database.png>)
